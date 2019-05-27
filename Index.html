@@ -1,0 +1,116 @@
+<!DOCTYPE html><html>
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="style.css" />
+<script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+</head>
+<body>
+  
+
+<img id="myImage"></img>
+<input id="time" value="50"/>
+<input type="file" accept="image/*" id="photo"/>
+
+
+  <script >
+addEventListener('load', function(e) {
+  photoId=0
+  urls=[]
+  timeScale=0
+  slideShowRun=false
+  b=document.body
+b.style.backgroundColor="#DAD1C0"
+t=document.getElementById("time")
+p=document.getElementById("photo")
+c = document.getElementById("myImage");
+c.style.overflowX="hidden"
+c.style.marginLeft="auto"
+c.style.marginRight="auto"
+width=document.documentElement.clientWidth
+height=document.documentElement.clientHeight
+myOptions={}
+var hammertime = new Hammer(c, myOptions);
+hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL })
+hammertime.on('swipe', function(ev) {
+  if (ev.direction==2) {
+   photoId=(photoId==urls.length-1)?0:++photoId
+   nextPhoto()
+}
+if (ev.direction==4) {
+  photoId=(photoId==0)?0:--photoId
+  nextPhoto()
+}
+if (ev.direction==8) {
+  slideShowRun=true
+  slideShow()
+}
+if (ev.direction==16) {
+  slideShowRun=false
+  slideShow()
+}
+});
+
+hammertime.on('press', function(ev) {
+p.style.display="block"
+t.style.display="block"
+c.style.display="none"
+
+})
+
+function slideShow(){
+c.style.display="block"
+t.style.display="none"
+p.style.display="none"
+if (slideShowRun) {
+
+photoId=(photoId==urls.length-1)?0:++photoId
+nextPhoto()
+setTimeout(slideShow,time.value*1000)
+}
+}
+
+function handleFiles(e) {
+  urls=Array.from(e.target.files)
+c.style.display="block"
+t.style.display="none"
+p.style.display="none"
+photoId=0
+  nextPhoto()
+}
+
+function fadeOut(){
+  c.style.opacity=0
+  c.style.transitionDuration=1+"s"
+}
+
+function fadeIn(){
+c.style.opacity=1
+c.style.transitionDuration=1+"s"
+}
+
+
+function showNext(){
+  c.src = URL.createObjectURL(urls[photoId])
+c.style.maxWidth=width+"px"
+c.style.maxHeight=height+"px"
+  fadeIn()
+}
+
+function nextPhoto() {
+fadeOut()
+setTimeout(showNext,1000)
+}
+
+p.addEventListener("change",handleFiles)
+
+t.addEventListener("change",slideShow)
+
+c.addEventListener("click",nextPhoto)
+
+
+
+});
+</script>
+</body>
+</html>
