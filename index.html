@@ -1,4 +1,6 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
@@ -8,116 +10,141 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <link rel="stylesheet" href="style.css" />
-<script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+  <style>
+  .control {
+    font-size:4vw;
+    }
+    </style>
+  <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
 </head>
+
 <body>
-  
-
-<img id="myImage"></img>
-<input id="time" value="50"/>
-<input type="file" accept="image/*" id="photo" multiple/>
 
 
-  <script >
-addEventListener('load', function(e) {
-  photoId=0
-  urls=[]
-  timeScale=0
-  slideShowRun=false
-  b=document.body
-b.style.backgroundColor="#DAD1C0"
-t=document.getElementById("time")
-p=document.getElementById("photo")
-c = document.getElementById("myImage");
-c.style.overflowX="hidden"
-c.style.marginLeft="auto"
-c.style.marginRight="auto"
-c.style.verticalAlign="middle"
-width=document.documentElement.clientWidth
-height=document.documentElement.clientHeight
-myOptions={}
-var hammertime = new Hammer(c, myOptions);
-hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL })
-hammertime.on('swipe', function(ev) {
-  if (ev.direction==2) {
-   photoId=(photoId==urls.length-1)?0:++photoId
-   nextPhoto()
-}
-if (ev.direction==4) {
-  photoId=(photoId==0)?0:--photoId
-  nextPhoto()
-}
-if (ev.direction==8) {
-  slideShowRun=true
-  slideShow()
-}
-if (ev.direction==16) {
-  slideShowRun=false
-  slideShow()
-}
-});
+  <img id="myImage"></img>
+  <div id="control" class="control">
+    <br><br>
+    <input type="file" accept="image/*" id="photo" multiple class="control"/>
+    <br><br><br><br>
+    <div id="timing">
+<input type="radio" name="time"  class="control" value="20">20 seconds <br>
+<input type="radio" name="time" class="control" value="60">1 minute <br>
+<input type="radio" name="time" class="control" value="120">2 minutes <br>
+<input type="radio" name="time" class="control" value="240">4 minutes <br>
+<input type="radio" name="time" class="control" value="480">8 minutes <br>
+</div>
+<br><br>
 
-hammertime.on('press', function(ev) {
-p.style.display="block"
-t.style.display="block"
-c.style.display="none"
+    Swipe up to start slide show. Swipe down to stop.
+    Swipe right for next slide. Swipe left for previous.
+    Press and hold to select slides and to change timing.
 
-})
+    <br>
+    from <a href="https://bwedgar.github.io/slideshow">bwedgar.github.io/slideshow</a>
+  </div>
 
-function slideShow(){
-c.style.display="block"
-t.style.display="none"
-p.style.display="none"
-if (slideShowRun) {
+  <script>
+    addEventListener('load', function(e) {
+      photoId = 0
+      urls = []
+      timeScale = 0
+      slideShowRun = false
+      b = document.body
+      b.style.backgroundColor = "#DAD1C0"
+      t = document.getElementsByName("time")
+      timing = document.getElementById("timing")
+      p = document.getElementById("photo")
+      c = document.getElementById("control");
+      image = document.getElementById("myImage");
+      image.style.overflowX = "hidden"
+      image.style.marginLeft = "auto"
+      image.style.marginRight = "auto"
+      image.style.verticalAlign = "middle"
+      width = document.documentElement.clientWidth
+      height = document.documentElement.clientHeight
+      myOptions = {}
+      var hammertime = new Hammer(c, myOptions);
+      hammertime.get('swipe').set({
+        direction: Hammer.DIRECTION_ALL
+      })
+      hammertime.on('swipe', function(ev) {
+        if (ev.direction == 2) {
+          photoId = (photoId == urls.length - 1) ? 0 : ++photoId
+          nextPhoto()
+        }
+        if (ev.direction == 4) {
+          photoId = (photoId == 0) ? 0 : --photoId
+          nextPhoto()
+        }
+        if (ev.direction == 8) {
+          slideShowRun = true
+          slideShow()
+        }
+        if (ev.direction == 16) {
+          slideShowRun = false
+          slideShow()
+        }
+      });
 
-photoId=(photoId==urls.length-1)?0:++photoId
-nextPhoto()
-setTimeout(slideShow,time.value*1000)
-}
-}
+      hammertime.on('press', function(ev) {
+        c.style.display = "block"
+        image.style.display = "none"
 
-function handleFiles(e) {
-  urls=Array.from(e.target.files)
-c.style.display="block"
-t.style.display="none"
-p.style.display="none"
-photoId=0
-  nextPhoto()
-}
+      })
 
-function fadeOut(){
-  c.style.opacity=0
-  c.style.transitionDuration=1+"s"
-}
+      function slideShow() {
+        image.style.display = "block"
+        c.style.display = "none"
+        if (slideShowRun) {
 
-function fadeIn(){
-c.style.opacity=1
-c.style.transitionDuration=1+"s"
-}
+          photoId = (photoId == urls.length - 1) ? 0 : ++photoId
+          nextPhoto()
+          setTimeout(slideShow, time.value * 1000)
+        }
+      }
 
+      function handleFiles(e) {
+        urls = Array.from(e.target.files)
+        image.style.display = "block"
+        c.style.display = "none"
+        //p.style.display="none"
+        photoId = 0
+        nextPhoto()
+      }
 
-function showNext(){
-  c.src = URL.createObjectURL(urls[photoId])
-c.style.maxWidth=width+"px"
-c.style.maxHeight=height+"px"
-  fadeIn()
-}
+      function fadeOut() {
+        image.style.opacity = 0
+        image.style.transitionDuration = 1 + "s"
+      }
 
-function nextPhoto() {
-fadeOut()
-setTimeout(showNext,1000)
-}
-
-p.addEventListener("change",handleFiles)
-
-t.addEventListener("change",slideShow)
-
-c.addEventListener("click",nextPhoto)
+      function fadeIn() {
+        image.style.opacity = 1
+        image.style.transitionDuration = 1 + "s"
+      }
 
 
+      function showNext() {
+        image.src = URL.createObjectURL(urls[photoId])
+        image.style.maxWidth = width + "px"
+        image.style.maxHeight = height + "px"
+        fadeIn()
+      }
 
-});
-</script>
+      function nextPhoto() {
+        fadeOut()
+        setTimeout(showNext, 1000)
+      }
+
+      p.addEventListener("change", handleFiles)
+
+      timing.addEventListener("change", slideShow)
+
+      image.addEventListener("click", nextPhoto)
+
+
+
+    });
+  </script>
 </body>
+
 </html>
