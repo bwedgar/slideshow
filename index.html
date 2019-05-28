@@ -28,7 +28,7 @@
     <br><br><br><br>
     <div id="timing">
 <input type="radio" name="time"  class="control" value="20">20 seconds <br>
-<input type="radio" name="time" class="control" value="60">1 minute <br>
+<input type="radio" name="time" class="control" value="60" checked>1 minute <br>
 <input type="radio" name="time" class="control" value="120">2 minutes <br>
 <input type="radio" name="time" class="control" value="240">4 minutes <br>
 <input type="radio" name="time" class="control" value="480">8 minutes <br>
@@ -48,6 +48,7 @@
       photoId = 0
       urls = []
       timeScale = 0
+timer=""
       slideShowRun = false
       b = document.body
       b.style.backgroundColor = "#DAD1C0"
@@ -63,7 +64,7 @@
       width = document.documentElement.clientWidth
       height = document.documentElement.clientHeight
       myOptions = {}
-      var hammertime = new Hammer(c, myOptions);
+      var hammertime = new Hammer(image, myOptions);
       hammertime.get('swipe').set({
         direction: Hammer.DIRECTION_ALL
       })
@@ -93,13 +94,15 @@
       })
 
       function slideShow() {
+        clearTimeout(timer)
         image.style.display = "block"
         c.style.display = "none"
         if (slideShowRun) {
 
+time=document.querySelector('input[name="time"]:checked').value;
           photoId = (photoId == urls.length - 1) ? 0 : ++photoId
           nextPhoto()
-          setTimeout(slideShow, time.value * 1000)
+          timer=setTimeout(slideShow, time * 1000)
         }
       }
 
