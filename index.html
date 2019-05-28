@@ -107,6 +107,8 @@ time=document.querySelector('input[name="time"]:checked').value;
       }
 
       function handleFiles(e) {
+width = document.documentElement.clientWidth
+      height = document.documentElement.clientHeight
         urls = Array.from(e.target.files)
         image.style.display = "block"
         c.style.display = "none"
