@@ -1,0 +1,101 @@
+<!DOCTYPE html><html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width" />
+  <title>buttons</title>
+</head>
+<body>
+  <script src="https://bwedgar.github.io/buttons/buttons.js"></script>
+<script src="script.js"></script>
+<script>
+var time
+slideNumber= 0
+urls= []
+time= 60
+slideShowRun = false
+timer=""
+width = document.documentElement.clientWidth
+height = document.documentElement.clientHeight
+
+
+addButton("previousSlideButton",25,buttonStyle,"prev",()=>showPreviousSlide())
+addButton("stopSlideShowButton",25,buttonStyle,"stop",()=>stopSlideShow())
+addButton("startSlideShowButton",25,buttonStyle,"start",
+()=>startSlideShow())
+addButton("nextSlideButton",25,buttonStyle,"next",()=>showNextSlide())
+topRowButtons=[previousSlideButton,stopSlideShowButton,startSlideShowButton,nextSlideButton]
+
+topRowButtons.forEach(b=>b.grayout)
+
+addButton("timer20seconds",20,buttonStyle,"20 sec",()=>setTimer(timer20seconds,20)),
+addButton("timer60seconds",20,buttonStyle ,"1 min",()=>setTimer(timer60seconds,60)),
+addButton("timer120seconds",20,buttonStyle ,"2 min",()=>setTimer(timer120seconds,120)),
+addButton("timer240seconds",20,buttonStyle ,"4 min",()=>setTimer(timer240seconds,240)),
+addButton("timer480seconds",20,buttonStyle ,"8 min",()=>setTimer(timer480seconds,480))
+
+timerButtons=[timer20seconds,timer60seconds,timer120seconds,timer240seconds,timer480seconds]
+grayoutTimerButtons=()=>timerButtons.forEach(b=>b.grayout())
+timer60seconds.restore()
+setTimer=(selectedTimerButton,time1)=>{
+  time=time1
+  grayoutTimerButtons()
+  selectedTimerButton.restore()
+}
+
+addImageButton("imageButton",()=>showButtons())
+
+addPhotoSelectorButton("photos",100,buttonStyle,"choose",(urls)=>{
+  urls=urls
+  hideButtons()
+  startSlideShow()
+})
+
+hideButtons=()=>{
+  buttons=[...topRowButtons,...timerButtons,photos]
+  buttons.forEach(b=>b.hide())
+  imageButton.restore()
+}
+
+showButtons=()=>{
+  buttons=[...topRowButtons,...timerButtons,photos]
+  imageButton.hide()
+  buttons.forEach(b=>b.restore())
+}
+
+showNextSlide=()=>{
+  slideNumber = (slideNumber == urls.length - 1) ? 0 : ++slideNumber
+slide we.    s  ShowRun = false
+cleae
+  .s Sh (slideNumber)
+}
+showPreviousSlide=()=>{
+  slideNumber = (slideNumber == 0) ? 0 : --slideNumber
+  showSlide(slideNumber)
+}
+startSlideShow=()=>{
+  slideShow(true)
+}
+stopSlideShow=()=>{
+  clearTimeout(timer)
+  showSlide(slideNumber)
+}
+function slideShow(slideShowRun) {
+  clearTimeout(timer)
+  if (slideShowRun) {
+    slideNumber = (slideNumber == urls.length - 1) ? 0 : ++slideNumber
+    showSlide(slideNumber)
+    timer=setTimeout(()=>slideShow(true), time * 2*1000)
+  }
+}
+
+function showSlide(slideNumber) {
+  hideButtons()
+  imageButton.changeSrc(URL.createObjectURL(urls[slideNumber]))
+  imageButton.style.maxWidth = width + "px"
+  imageButton.style.maxHeight = height + "px"
+}
+
+</script>
+
+</body>
+</html>
